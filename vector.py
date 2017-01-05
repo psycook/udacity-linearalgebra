@@ -4,6 +4,7 @@ class Vector(object):
     """This object represents a vector"""
 
     CANNOT_NORMALISZE_ZERO_VECTOR_MSG = 'Cannot normalize a zero vector'
+    NO_UNIQUE_PARALLEL_COMPONENT_MSG = 'No unique parallel component'
 
     def __init__(self, coordinates):
         try:
@@ -75,6 +76,7 @@ class Vector(object):
                 raise error
 
     def is_zero(self):
+        """Returns True if the vector magnitude is zero, otherwise False"""
         return self.magnitude() < 1e-10
 
 
@@ -88,6 +90,31 @@ class Vector(object):
     def is_orthogonal(self, v_vector):
         """Returns True if the vectors are orthogonal, otherwise False"""
         return abs(self.dot(v_vector)) < 1e-10
+
+    def component_parallel_to(self, basis):
+        """Returns the projection of self onto basis"""
+        try:
+            unit = basis.normalized()
+            weight = self.dot(unit)
+            return unit.times_scalar(weight)
+
+        except Exception as error:
+            if str(error) == self.CANNOT_NORMALISZE_ZERO_VECTOR_MSG:
+                raise Exception(self.NO_UNIQUE_PARALLEL_COMPONENT_MSG)
+            else:
+                raise error
+
+    def component_orthogonal_to(self, basis):
+        """Returns the orthogonal component of self onto basis"""
+        try:
+            projection = self.component_parallel_to(basis)
+            return self - projection
+
+        except Exception as error:
+            if str(error) == self.CANNOT_NORMALISZE_ZERO_VECTOR_MSG:
+                raise Exception(self.NO_UNIQUE_PARALLEL_COMPONENT_MSG)
+            else:
+                raise error
 
 # ADDING, SUBTRACTING AND SCALAR MULTIPLICATION
 
@@ -140,22 +167,36 @@ class Vector(object):
 #print "The angle between ", V, "and", W, "is", V.angle_with(W, True)
 
 
-V = Vector([-7.579, -7.88])
-W = Vector([22.737, 23.64])
-print "Vectors are parallel", V.is_parallel(W)
-print "Vectors are orthogonal", V.is_orthogonal(W)
+#V = Vector([-7.579, -7.88])
+#W = Vector([22.737, 23.64])
+#print "Vectors are parallel", V.is_parallel(W)
+#print "Vectors are orthogonal", V.is_orthogonal(W)
 
-V = Vector([-2.029, 9.97, 4.172])
-W = Vector([-9.231, -6.639, -7.245])
-print "Vectors are parallel", V.is_parallel(W)
-print "Vectors are orthogonal", V.is_orthogonal(W)
+#V = Vector([-2.029, 9.97, 4.172])
+#W = Vector([-9.231, -6.639, -7.245])
+#print "Vectors are parallel", V.is_parallel(W)
+#print "Vectors are orthogonal", V.is_orthogonal(W)
 
-V = Vector([-2.328, -7.284, -1.214])
-W = Vector([-1.821, 1.072, -2.94])
-print "Vectors are parallel", V.is_parallel(W)
-print "Vectors are orthogonal", V.is_orthogonal(W)
+#V = Vector([-2.328, -7.284, -1.214])
+#W = Vector([-1.821, 1.072, -2.94])
+#print "Vectors are parallel", V.is_parallel(W)
+#print "Vectors are orthogonal", V.is_orthogonal(W)
 
-V = Vector([2.118, 4.927])
-W = Vector([0.0, 0.0])
-print "Vectors are parallel", V.is_parallel(W)
-print "Vectors are orthogonal", V.is_orthogonal(W)
+#V = Vector([2.118, 4.927])
+#W = Vector([0.0, 0.0])
+#print "Vectors are parallel", V.is_parallel(W)
+#print "Vectors are orthogonal", V.is_orthogonal(W)
+
+V = Vector([3.039, 1.879])
+W = Vector([0.825, 2.036])
+print "The projection is", V.component_parallel_to(W)
+
+V = Vector([-9.88, -3.264, -8.159])
+W = Vector([-2.155, -9.353, -9.473])
+print "The orthogonal is", V.component_orthogonal_to(W)
+
+V = Vector([3.009, -6.172, 3.692, -2.51])
+W = Vector([6.404, -9.144, 2.759, 8.718])
+print "The projection is", V.component_parallel_to(W)
+print "The orthogonal is", V.component_orthogonal_to(W)
+
