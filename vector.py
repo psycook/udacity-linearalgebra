@@ -68,11 +68,11 @@ class Vector(object):
             else:
                 return math.acos(dot_product/(magnitude_self*magnitude_v_vector))
 
-        except Exception as e:
-            if str(e) == self.CANNOT_NORMALISZE_ZERO_VECTOR_MSG:
+        except Exception as error:
+            if str(error) == self.CANNOT_NORMALISZE_ZERO_VECTOR_MSG:
                 raise Exception("Cannot compute an angle with zero vector")
             else:
-                raise e
+                raise error
 
 # ADDING, SUBTRACTING AND SCALAR MULTIPLICATION
 
