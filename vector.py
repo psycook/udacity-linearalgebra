@@ -52,15 +52,15 @@ class Vector(object):
         except ZeroDivisionError:
             raise Exception(self.CANNOT_NORMALISZE_ZERO_VECTOR_MSG)
 
-    def dot_product(self, v_vector):
+    def dot(self, v_vector):
         """Calculates the dot product of this vector and v_vector"""
         coordinates_multiplied = [x*y for x, y in zip(self.coordinates, v_vector.coordinates)]
         return sum(coordinates_multiplied)
 
-    def angle_of(self, v_vector, in_degrees=False):
+    def angle_with(self, v_vector, in_degrees=False):
         """Calculates the angle between two vectors"""
         try:
-            dot_product = self.dot_product(v_vector)
+            dot_product = self.dot(v_vector)
             magnitude_self = self.magnitude()
             magnitude_v_vector = v_vector.magnitude()
             if in_degrees:
@@ -73,6 +73,21 @@ class Vector(object):
                 raise Exception("Cannot compute an angle with zero vector")
             else:
                 raise error
+
+    def is_zero(self):
+        return self.magnitude() < 1e-10
+
+
+    def is_parallel(self, v_vector):
+        """Returns True if the vectors are parallel, otherwise False"""
+        return (self.is_zero() or
+                v_vector.is_zero() or
+                self.angle_with(v_vector) == 0.0 or
+                self.angle_with(v_vector) == math.pi)
+
+    def is_orthogonal(self, v_vector):
+        """Returns True if the vectors are orthogonal, otherwise False"""
+        return abs(self.dot(v_vector)) < 1e-10
 
 # ADDING, SUBTRACTING AND SCALAR MULTIPLICATION
 
@@ -108,18 +123,39 @@ class Vector(object):
 #V = Vector([0, 0, 0])
 #print "The normal vector of", V, "is", V.normalized()
 
-V = Vector([7.887, 4.138])
-W = Vector([-8.802, 6.776])
-print "The dot product of ", V, "and", W, "is", V.dot_product(W)
+#V = Vector([7.887, 4.138])
+#W = Vector([-8.802, 6.776])
+#print "The dot product of ", V, "and", W, "is", V.dot_product(W)
 
-V = Vector([-5.955, -4.904, -1.874])
-W = Vector([-4.496, -8.755, 7.103])
-print "The dot product of ", V, "and", W, "is", V.dot_product(W)
+#V = Vector([-5.955, -4.904, -1.874])
+#W = Vector([-4.496, -8.755, 7.103])
+#print "The dot product of ", V, "and", W, "is", V.dot_product(W)
 
-V = Vector([3.183, -7.627])
-W = Vector([-2.668, 5.319])
-print "The angle between ", V, "and", W, "is", V.angle_of(W, False)
+#V = Vector([3.183, -7.627])
+#W = Vector([-2.668, 5.319])
+#print "The angle between ", V, "and", W, "is", V.angle_with(W, False)
 
-V = Vector([7.35, 0.221, 5.188])
-W = Vector([2.751, 8.259, 3.985])
-print "The angle between ", V, "and", W, "is", V.angle_of(W, True)
+#V = Vector([7.35, 0.221, 5.188])
+#W = Vector([2.751, 8.259, 3.985])
+#print "The angle between ", V, "and", W, "is", V.angle_with(W, True)
+
+
+V = Vector([-7.579, -7.88])
+W = Vector([22.737, 23.64])
+print "Vectors are parallel", V.is_parallel(W)
+print "Vectors are orthogonal", V.is_orthogonal(W)
+
+V = Vector([-2.029, 9.97, 4.172])
+W = Vector([-9.231, -6.639, -7.245])
+print "Vectors are parallel", V.is_parallel(W)
+print "Vectors are orthogonal", V.is_orthogonal(W)
+
+V = Vector([-2.328, -7.284, -1.214])
+W = Vector([-1.821, 1.072, -2.94])
+print "Vectors are parallel", V.is_parallel(W)
+print "Vectors are orthogonal", V.is_orthogonal(W)
+
+V = Vector([2.118, 4.927])
+W = Vector([0.0, 0.0])
+print "Vectors are parallel", V.is_parallel(W)
+print "Vectors are orthogonal", V.is_orthogonal(W)
